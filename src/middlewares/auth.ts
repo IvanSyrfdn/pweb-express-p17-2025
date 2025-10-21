@@ -3,11 +3,11 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "default_secret_key";
 
-export const verifyToken = (req: any, res: Response, next: NextFunction) => {
+export const authenticateToken = (req: any, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1]; // Format: Bearer <token>
+  const token = authHeader && authHeader.split(" ")[1];
 
-  if (!token) return res.status(401).json({ message: "No token provided" });
+  if (!token) return res.status(401).json({ message: "Access token missing" });
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);

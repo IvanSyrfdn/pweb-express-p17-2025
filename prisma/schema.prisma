@@ -1,3 +1,7 @@
+// ======================================
+//   Prisma Schema - Bookstore Project
+// ======================================
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -8,58 +12,77 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ====================== USERS ======================
 model users {
-  id          String      @id @default(uuid())
-  username    String?
+  id          String    @id @default(uuid())
+  username    String
+  email       String    @unique
   password    String
-  email       String       @unique
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  // Relations
   orders      orders[]
-  created_at  DateTime     @default(now())
-  updated_at  DateTime     @updatedAt
 }
 
+// ====================== GENRES ======================
 model genres {
   id          String     @id @default(uuid())
   name        String     @unique
-  books       books[]
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
   deleted_at  DateTime?
+
+  // Relations
+  books       books[]
 }
 
+// ====================== BOOKS ======================
 model books {
-  id               String      @id @default(uuid())
-  title            String      @unique
+  id               String     @id @default(uuid())
+  title            String     @unique
   writer           String
   publisher        String
   publication_year Int
   description      String?
   price            Float
   stock_quantity   Int
-  genre_id         String
-  genre            genres      @relation(fields: [genre_id], references: [id])
-  order_items      order_items[]
-  created_at       DateTime    @default(now())
-  updated_at       DateTime    @updatedAt
+  created_at       DateTime   @default(now())
+  updated_at       DateTime   @updatedAt
   deleted_at       DateTime?
+
+  // Foreign Key
+  genre_id         String
+  genres           genres     @relation(fields: [genre_id], references: [id])
+
+  // Relations
+  order_items      order_items[]
 }
 
+// ====================== ORDERS ======================
 model orders {
-  id          String         @id @default(uuid())
-  user_id     String
-  user        users          @relation(fields: [user_id], references: [id])
-  order_items order_items[]
-  created_at  DateTime       @default(now())
-  updated_at  DateTime       @updatedAt
-}
-
-model order_items {
   id          String      @id @default(uuid())
-  quantity    Int
-  order_id    String
-  book_id     String
-  order       orders      @relation(fields: [order_id], references: [id])
-  book        books       @relation(fields: [book_id], references: [id])
+  user_id     String
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt
+
+  // Relations
+  users       users       @relation(fields: [user_id], references: [id])
+  order_items order_items[]
+}
+
+// ====================== ORDER ITEMS ======================
+model order_items {
+  id          String    @id @default(uuid())
+  quantity    Int
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  // Foreign Keys
+  order_id    String
+  book_id     String
+
+  // Relations
+  orders      orders    @relation(fields: [order_id], references: [id])
+  books       books     @relation(fields: [book_id], references: [id])
 }

@@ -1,16 +1,20 @@
 import express from "express";
-import prisma from "./config/prisma";
+import cors from "cors";
+import authRoutes from "./routes/authRoutes";
+import genreRoutes from "./routes/genreRoutes";
+import bookRoutes from "./routes/bookRoutes";
+import orderRoutes from "./routes/orderRoutes";
+import orderItemRoutes from "./routes/orderItemRoutes";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-app.get("/", async (_, res) => {
-  const users = await prisma.user.findMany();
-  res.json({
-    message: "Server connected successfully 🚀",
-    users_count: users.length
-  });
-});
+app.use("/auth", authRoutes);
+app.use("/genres", genreRoutes);
+app.use("/books", bookRoutes);
+app.use("/orders", orderRoutes);
+app.use("/order-items", orderItemRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`✅ Running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
