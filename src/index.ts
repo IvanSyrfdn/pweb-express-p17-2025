@@ -1,15 +1,30 @@
-import express from "express";
+import express, { Application, Request, Response } from 'express';
+import dotenv from 'dotenv';
+import prisma from './config/prisma';
 
-const app = express();
+// Load environment variables
+dotenv.config();
 
+const app: Application = express();
+const PORT = process.env.PORT || 4000; // Sesuaikan PORT masing-masing
+
+// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// check endpoint
-app.get("/", (_, response) => {
-  response.status(200).send("Server is up and running 💫");
+// Test route
+app.get('/', (req: Request, res: Response) => {
+  res.json({ message: 'Express + Prisma + PostgreSQL' });
 });
 
-const PORT = 4000;
+// Start server
 app.listen(PORT, () => {
-  console.log(`Express is running on Port ${PORT}`);
+  console.log(`Server berjalan di http://localhost:${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  console.log('Database disconnected');
+  process.exit(0);
 });
