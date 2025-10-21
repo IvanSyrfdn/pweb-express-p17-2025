@@ -8,50 +8,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           Int             @id @default(autoincrement())
-  name         String
-  email        String          @unique
-  password     String
-  transactions Transaction[]
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+model users {
+  id          String      @id @default(uuid())
+  username    String?
+  password    String
+  email       String       @unique
+  orders      orders[]
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
 }
 
-model Genre {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String?
-  books       Book[]
+model genres {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  books       books[]
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  deleted_at  DateTime?
 }
 
-model Book {
-  id          Int      @id @default(autoincrement())
-  title       String   @unique
-  author      String?
-  stock       Int
-  price       Int
-  genreId     Int
-  genre       Genre    @relation(fields: [genreId], references: [id])
-  items       TransactionItem[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model books {
+  id               String      @id @default(uuid())
+  title            String      @unique
+  writer           String
+  publisher        String
+  publication_year Int
+  description      String?
+  price            Float
+  stock_quantity   Int
+  genre_id         String
+  genre            genres      @relation(fields: [genre_id], references: [id])
+  order_items      order_items[]
+  created_at       DateTime    @default(now())
+  updated_at       DateTime    @updatedAt
+  deleted_at       DateTime?
 }
 
-model Transaction {
-  id          Int               @id @default(autoincrement())
-  userId      Int
-  user        User              @relation(fields: [userId], references: [id])
-  totalPrice  Int
-  items       TransactionItem[]
-  createdAt   DateTime          @default(now())
+model orders {
+  id          String         @id @default(uuid())
+  user_id     String
+  user        users          @relation(fields: [user_id], references: [id])
+  order_items order_items[]
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
 }
 
-model TransactionItem {
-  id             Int          @id @default(autoincrement())
-  transactionId  Int
-  bookId         Int
-  quantity       Int
-  book           Book         @relation(fields: [bookId], references: [id])
-  transaction    Transaction  @relation(fields: [transactionId], references: [id])
+model order_items {
+  id          String      @id @default(uuid())
+  quantity    Int
+  order_id    String
+  book_id     String
+  order       orders      @relation(fields: [order_id], references: [id])
+  book        books       @relation(fields: [book_id], references: [id])
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
 }
