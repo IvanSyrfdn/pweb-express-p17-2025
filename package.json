@@ -1,0 +1,31 @@
+{
+  "name": "pweb-express-p17-2025",
+  "version": "1.0.0",
+  "description": "| Nama                        | NRP        |\r | --------------------------- | ---------- |\r | Hansen Chang                | 5027241028 |\r | Ivan Syarifuddin            | 5027241045 |\r | Muhammad Khosyi Syehab      | 5027241089 |",
+  "main": "index.js",
+  "scripts": {
+  "build": "tsc --build",
+  "start": "node ./dist/index.js",
+  "start:dev": "nodemon ./src/index.ts"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanSyrfdn/pweb-express-p17-2025.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvanSyrfdn/pweb-express-p17-2025/issues"
+  },
+  "homepage": "https://github.com/IvanSyrfdn/pweb-express-p17-2025#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.9.1",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
