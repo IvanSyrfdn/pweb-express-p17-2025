@@ -1,30 +1,23 @@
-import express, { Application, Request, Response } from 'express';
-import dotenv from 'dotenv';
-import prisma from './config/prisma';
+import express from "express";
+import prisma from "./config/prisma";
 
-// Load environment variables
-dotenv.config();
-
-const app: Application = express();
-const PORT = process.env.PORT || 4000; // Sesuaikan PORT masing-masing
-
-// Middleware
+const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Test route
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Express + Prisma + PostgreSQL' });
+// ✅ Tambahkan route dasar ini:
+app.get("/", (_, res) => {
+  res.status(200).json({
+    message: "Server is up and running 🚀",
+  });
 });
 
-// Start server
+// Tes koneksi database
+app.get("/test-db", async (_, res) => {
+  const users = await prisma.user.findMany();
+  res.json(users);
+});
+
+const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}`);
-});
-
-// Graceful shutdown
-process.on('SIGINT', async () => {
-  await prisma.$disconnect();
-  console.log('Database disconnected');
-  process.exit(0);
 });

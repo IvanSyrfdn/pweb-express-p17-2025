@@ -1,33 +1,57 @@
-// Konfigurasi generator
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
-// Konfigurasi datasource
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// Model User
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]
+  id           Int             @id @default(autoincrement())
+  name         String
+  email        String          @unique
+  password     String
+  transactions Transaction[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 }
 
-// Model Post
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Genre {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  books       Book[]
+}
+
+model Book {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  author      String?
+  stock       Int
+  price       Int
+  genreId     Int
+  genre       Genre    @relation(fields: [genreId], references: [id])
+  items       TransactionItem[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Transaction {
+  id          Int               @id @default(autoincrement())
+  userId      Int
+  user        User              @relation(fields: [userId], references: [id])
+  totalPrice  Int
+  items       TransactionItem[]
+  createdAt   DateTime          @default(now())
+}
+
+model TransactionItem {
+  id             Int          @id @default(autoincrement())
+  transactionId  Int
+  bookId         Int
+  quantity       Int
+  book           Book         @relation(fields: [bookId], references: [id])
+  transaction    Transaction  @relation(fields: [transactionId], references: [id])
 }
