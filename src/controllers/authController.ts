@@ -3,7 +3,7 @@ import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "default_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET || "supersecretjwtkey123";
 
 export const register = async (req: Request, res: Response) => {
   try {
